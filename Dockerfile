@@ -14,7 +14,6 @@ RUN \
   echo "daemon off;" >> /etc/nginx/nginx.conf
 
 ADD nginx/default /etc/nginx/sites-available/default
-#ADD nginx/tojson.php /var/www/index.php
 ADD nginx/htpasswd /etc/nginx/htpasswd
 
 # Expose ports.
