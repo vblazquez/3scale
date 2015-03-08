@@ -26,25 +26,19 @@ server {
         location / {
                 proxy_pass http://servers-api.va.3sca.net/;
         }
-        ## Always return a json
-        location ~* /servers/(\d+).*$ {
+        ## If it exists, return the json
+        location ~* /servers(.*).json$ {
+                proxy_pass http://servers-api.va.3sca.net/servers$1.json;
+                break;
+        }
+        ## we always want a json
+        location ~* /servers/(\d+) {
                 proxy_pass http://servers-api.va.3sca.net/servers/$1.json;
                 break;
         }
-        ## Use php to convert xml to json
-        location ~ \.php$ {
-                try_files $uri =404;
-                fastcgi_split_path_info ^(.+\.php)(/.+)$;
-                fastcgi_pass unix:/var/run/php5-fpm.sock;
-                fastcgi_index index.php;
-                include fastcgi_params;
-                expires 10m;
-        }
-        ## Can't find a json url, so let's convert it to json and return it
-        location  /servers {
-                try_files $uri /index.php;
-                index index.php;
-                alias /var/www/;
+        ## we always want a json
+        location /servers {
+                proxy_pass http://servers-api.va.3sca.net/servers.json;
         }
 }
 
